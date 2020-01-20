@@ -14,8 +14,12 @@
     <dependencies>
         <dependency>
             <groupId>dev.tokhna</groupId>
-            <artifactId>pet-clinic-data</artifactId>
-            <version>0.0.1</version>
+            <artifactId>recipe-app-data</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
