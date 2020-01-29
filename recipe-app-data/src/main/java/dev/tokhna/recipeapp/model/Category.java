@@ -1,13 +1,13 @@
 package dev.tokhna.recipeapp.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Data
+@EqualsAndHashCode(exclude = {"recipes"})
 @Entity
 public class Category {
     @Id
@@ -15,5 +15,6 @@ public class Category {
     private Long id;
     private String name;
     private String description;
-
+    @ManyToMany(mappedBy = "categories")
+    private Set<Recipe> recipes;
 }
