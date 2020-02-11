@@ -33,8 +33,8 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - my-multi-module-mvn-prj-{{ checksum "~/pom-checksum" }}
-            - my-multi-module-mvn-prj-
+            - spring5-recipe-app-{{ checksum "~/pom-checksum" }}
+            - spring5-recipe-app-
 
       - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
