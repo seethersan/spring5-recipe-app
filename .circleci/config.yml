@@ -14,7 +14,7 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
 
-    working_directory: ~/repo
+    working_directory: ~/spring5-recipe-app
 
     environment:
       # Customize the JVM maximum heap limit
@@ -23,19 +23,37 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Generate cumulative pom.xml checksum
+          command: |
+            find . -type f -name "pom.xml" -exec sh -c "sha256sum {} >> ~/pom-checksum.tmp" \;
+            sort -o ~/pom-checksum ~/pom-checksum.tmp
+          when: always
+
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - my-multi-module-mvn-prj-{{ checksum "~/pom-checksum" }}
+            - my-multi-module-mvn-prj-
 
-      - run: mvn dependency:go-offline
+      - run: mvn de.qaware.maven:go-offline-maven-plugin:resolve-dependencies
 
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+          key: spring5-recipe-app-{{ checksum "~/pom-checksum" }}
 
-      # run tests!
-      - run: mvn integration-test
+      - run: mvn package
+
+          - run:
+              name: Save test results
+              command: |
+                mkdir -p ~/test-results/junit/
+                find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+              when: always
+
+      - store_test_results:
+          path: ~/test-results
+
+            - store_artifacts:
+                path: my-service/target/my-service.jar
